@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Alchemy, Network, Utils } from 'alchemy-sdk';
 import { useState } from 'react';
+import { ethers } from 'ethers';
 
 function App() {
   const [userAddress, setUserAddress] = useState('');
@@ -18,9 +19,19 @@ function App() {
   const [hasQueried, setHasQueried] = useState(false);
   const [tokenDataObjects, setTokenDataObjects] = useState([]);
 
+  async function connectWallet() {
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.send("eth_requestAccounts", []);
+      setUserAddress(accounts[0]);
+    } else {
+      alert("Please install MetaMask!");
+    }
+  }
+
   async function getTokenBalance() {
     const config = {
-      apiKey: '<-- COPY-PASTE YOUR ALCHEMY API KEY HERE -->',
+      apiKey: 'TymeyPi4fDPjSIkaJ9LhjgrZfffN2X5e',
       network: Network.ETH_MAINNET,
     };
 
@@ -78,6 +89,10 @@ function App() {
         />
         <Button fontSize={20} onClick={getTokenBalance} mt={36} bgColor="blue">
           Check ERC-20 Token Balances
+        </Button>
+
+        <Button fontSize={20} onClick={connectWallet} mt={36} bgColor="blue">
+          Connect Wallet
         </Button>
 
         <Heading my={36}>ERC-20 token balances:</Heading>
